@@ -6,14 +6,14 @@ FROM openjdk
 WORKDIR /tmp/janusgraph/
 
 # Download and unzip janusgraph.
-RUN curl --location --output janus.zip https://github.com/JanusGraph/janusgraph/releases/download/v0.2.0/janusgraph-0.2.0-hadoop2.zip ; \
-    unzip janus.zip ; \
-    rm janus.zip ; \
-    mv janusgraph-0.2.0-hadoop2 /app ; \
-    rm -Rf /tmp/janusgraph
+# RUN curl --location --output janus.zip https://github.com/JanusGraph/janusgraph/releases/download/v0.2.0/janusgraph-0.2.0-hadoop2.zip ; \
+#     unzip janus.zip ; \
+#     rm janus.zip ; \
+#     mv janusgraph-0.2.0-hadoop2 /app ; \
+#     rm -Rf /tmp/janusgraph
 
 # Copy from file
-# COPY janusgraph-0.2.0-hadoop2/ /app/
+COPY janusgraph-0.2.0-hadoop2/ /app/
 
 # Continue here.
 WORKDIR /app
