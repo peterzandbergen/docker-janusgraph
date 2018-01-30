@@ -17,7 +17,7 @@ services:
   janusgraphsvc:
     image: janusgraph:0.2.0
     ports:
-      - "8192:8192"
+      - "8182:8182"
     volumes:
       - type: bind
         source: ./conf
