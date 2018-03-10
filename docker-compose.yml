@@ -3,7 +3,7 @@
 version: '3.3'
 services:
   janusgraphclient:
-    image: janusgraph:0.2.0
+    image: peterzandbergen/janusgraph:0.2.0
     # ports:
     #   - "8192:8192"
     volumes:
@@ -15,7 +15,7 @@ services:
     entrypoint: "sleep 5h"
     
   janusgraphsvc:
-    image: janusgraph:0.2.0
+    image: peterzandbergen/janusgraph:0.2.0
     ports:
       - "8182:8182"
     volumes:
