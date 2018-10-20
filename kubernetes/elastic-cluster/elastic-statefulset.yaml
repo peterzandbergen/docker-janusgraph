@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elastic
+  labels:
+    app: elastic
+spec:
+  serviceName: elastic
+  replicas: 3
+  selector:
+    matchLabels:
+      app: elastic
+  template:
+    metadata:
+      labels:
+        app: elastic
+    spec:
+      initContainers:
+        - name: wait-for-elastic-data
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: 
+          - 'sh'
+          - '-c'
+          - 'until [[ -d "/usr/share/elasticsearch/data" ]] ; do sleep 5; done'
+          securityContext:
+            privileged: true
+          volumeMounts:
+          - name: elastic-data
+            mountPath: /usr/share/elasticsearch/data
+        - name: set-chmod-elastic-data
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: 
+          - 'sh'
+          - '-c'
+          - 'chown 1000:1000 -R /usr/share/elasticsearch/data' 
+          securityContext:
+            privileged: true
+          volumeMounts:
+          - name: elastic-data
+            mountPath: /usr/share/elasticsearch/data
+      containers:
+      - name: elastic
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9200
+          name: rest
+        - containerPort: 9300
+          name: nodes
+        livenessProbe:
+          httpGet:
+            path: /_cluster/health
+            port: rest
+          initialDelaySeconds: 240
+          periodSeconds: 5
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 1Gi
+        env:
+          - name: "cluster.name"
+            value: janus-cluster
+          # - name: "bootstrap.memory_lock"
+          #   value: "true"
+          - name: ES_JAVA_OPTS
+            value: "-Xms512m -Xmx512m"
+          - name: "discovery.zen.ping.unicast.hosts"
+            value: elastic
+          # - name: "discovery.type"
+          #   value: single-node
+          - name: node.name
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: network.host
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          # - name: network.host
+          #   value: 0.0.0.0
+        volumeMounts:
+        - name: elastic-data
+          mountPath: /usr/share/elasticsearch/data
+  volumeClaimTemplates:
+  - metadata:
+      name: elastic-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 1Gi
