@@ -22,12 +22,8 @@ spec:
           command: 
           - 'sh'
           - '-c'
-          - |
-            until [[ -d "/usr/share/elasticsearch/data" ]]
-            do 
-              sleep 5
-            done
-            chown 1000:1000 -R /usr/share/elasticsearch/data
+          args:
+          - 'until [[ -d "/usr/share/elasticsearch/data" ]] ; do sleep 5 ; done ; chown 1000:1000 -R "/usr/share/elasticsearch/data" '
           securityContext:
             privileged: true
           volumeMounts:
