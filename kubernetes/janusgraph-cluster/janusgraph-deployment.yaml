@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: janusgraph
+spec:
+  selector:
+    matchLabels:
+      app: janusgraph
+  template:
+    metadata:
+      labels:
+        app: janusgraph
+    spec:
+      containers:
+      - name: janusgraph
+        image: peterzandbergen/janusgraph:0.3.0
+        ports:
+        - containerPort: <Por
