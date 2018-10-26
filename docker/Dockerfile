@@ -1,11 +1,18 @@
-# command to build: docker build --tag janusgraph:0.3.0 .
+# command to build: docker build --tag peterzandbergen/janusgraph:0.3.0 .
 # http://docs.janusgraph.org/latest/server.html
 FROM openjdk:11.0.1-jre-sid
 
-# Copy from file
-COPY tmp/janusgraph-0.3.0-hadoop2/ /app/
+# Download and unzip the janusgraph file.
+WORKDIR /tmp/janusgraph/
 
+# Download and unzip janusgraph.
+RUN curl --location --output janus.zip https://github.com/JanusGraph/janusgraph/releases/download/v0.3.0/janusgraph-0.3.0-hadoop2.zip ; \
+    unzip janus.zip ; \
+    rm janus.zip ; \
+    mv janusgraph-0.3.0-hadoop2 /app ; \
+    rm -Rf /tmp/janusgraph
 # Continue here.
+
 WORKDIR /app
 
 # Default port for janusgraph-gremlin
