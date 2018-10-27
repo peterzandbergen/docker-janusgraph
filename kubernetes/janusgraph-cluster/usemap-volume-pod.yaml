@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-map-test-shell
+spec:
+  containers:
+    - name: test-container
+      image: k8s.gcr.io/busybox
+      command: [ "/bin/sh", "-c", "sleep 10000" ]
+      volumeMounts:
+      - name: config-volume
+        mountPath: /etc/janusgraph/conf
+  volumes:
+    - name: config-volume
+      configMap:
+        # Provide the name of the ConfigMap containing the files you want
+        # to add to the container
+        name: janusgraph-config
+        items:
+        - key: gremlin-server.yaml
+          path: gremlin-server/gremling-server.yaml
+        - key: janusgraph-cassandra-es-server.properties
+          path: gremlin-server/janusgraph-cassandra-es-server.properties
+  restartPolicy: Always
+
+
+  
