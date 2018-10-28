@@ -19,7 +19,7 @@ WORKDIR /app
 EXPOSE 8182
 
 # Default config settings.
-ENV JANUS_SERVER_CONFIG="conf/gremlin-server/gremlin-server.yaml"
+ENV JANUS_SERVER_CONFIG="/app/conf/gremlin-server/gremlin-server.yaml"
 ENV JANUS_SERVER_PROPERTIES="conf/gremlin-server/janusgraph-cql-es-server.properties"
 
 
@@ -27,6 +27,6 @@ ENV JANUS_SERVER_PROPERTIES="conf/gremlin-server/janusgraph-cql-es-server.proper
 VOLUME [ "/app/conf" ]
 
 # Start the server.
-ENTRYPOINT [ "bin/gremlin-server.sh" ]
+# ENTRYPOINT [ "bin/gremlin-server.sh" ]
 # Set the config file in cmd.
-CMD ["${JANUS_SERVER_CONFIG}"]
+CMD /app/bin/gremlin-server.sh ${JANUS_SERVER_CONFIG}

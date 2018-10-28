@@ -6,6 +6,7 @@ spec:
   selector:
     matchLabels:
       app: janusgraph
+  replicas: 1
   template:
     metadata:
       labels:
@@ -14,5 +15,28 @@ spec:
       containers:
       - name: janusgraph
         image: peterzandbergen/janusgraph:0.3.0
+        imagePullPolicy: Always
         ports:
-        - containerPort: <Por
+        - containerPort: 8182
+        resources:
+          limits:
+            cpu: "500m"
+            memory: 1Gi
+          requests:
+            cpu: "100m"
+            memory: 1Gi
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/conf
+      volumes:
+      - name: config-volume
+        configMap:
+          # Provide the name of the ConfigMap containing the files you want
+          # to add to the container
+          name: janusgraph-config
+          items:
+          - key: gremlin-server.yaml
+            path: gremlin-server/gremlin-server.yaml
+          - key: janusgraph-cql-es-server.properties
+            path: gremlin-server/janusgraph-cql-es-server.properties
+
