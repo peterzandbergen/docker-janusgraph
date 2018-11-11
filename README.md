@@ -20,5 +20,9 @@ GraphOfTheGodsFactory.load(graph)
 ```
 
 ```
+curl -XPOST -Hcontent-type:application/json -d '{"gremlin":"<replace this"}' http://localhost:8182
+```
+
+```
 curl -XPOST -Hcontent-type:application/json -d '{"gremlin":"g.V().count()"}' http://localhost:8182
 ```
